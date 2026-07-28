@@ -6,7 +6,7 @@ Historical W0 decision input. The organization decision is complete.
 
 Dornglut accepted [ADR 0005 — Authorize the bounded Werkstatt pilot](https://github.com/dornglut/engineering/blob/main/adrs/0005-authorize-werkstatt-pilot.md) at revision `6561bc87ca43388388b504741046077d70f13144`.
 
-The complete proposal supplied to the organization before acceptance is retained in [history](history/w0-organization-decision-input.md).
+The complete proposal supplied before acceptance remains available at its [immutable accepted W0 revision](https://github.com/dornglut/werkstatt/blob/5a8a6c080a7cab0894e78d2d4dd28ee135b0808f/docs/organization-decision-input.md).
 
 ## Accepted organization outcome
 

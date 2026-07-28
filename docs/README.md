@@ -23,15 +23,9 @@
 
 ## Historical evidence
 
-The `history/` directory preserves the complete W0 proposals exactly as reviewed before acceptance:
+The complete W0 documents remain available at immutable Git revision `5a8a6c080a7cab0894e78d2d4dd28ee135b0808f`. Current summary documents link directly to their accepted historical versions.
 
-- [W0 product architecture proposal](history/w0-product-architecture.md)
-- [W0 security model proposal](history/w0-security-model.md)
-- [W0 investigation](history/w0-investigation.md)
-- [W0 organization decision input](history/w0-organization-decision-input.md)
-- [W0-to-W1 readiness contract](history/w0-w1-readiness.md)
-
-Historical files do not override accepted current architecture or organization authority.
+Do not duplicate accepted proposals into a second active or historical file tree merely for convenience. Git history is the evidence store unless a later issue requires a maintained historical document for a distinct purpose.
 
 ## Authority rules
 
@@ -41,7 +35,7 @@ Historical files do not override accepted current architecture or organization a
 - ADR 0005 owns the organization pilot decision;
 - pull requests own exact proposed delivery and review evidence;
 - code/tests will own implemented behavior beginning in W2;
-- generated packets and history are derived or historical, not active authority.
+- generated packets and immutable historical revisions are derived or historical, not active authority.
 
 ## Current maturity
 

@@ -4,7 +4,7 @@
 
 Completed and accepted. W0 was accepted through pull request #3 at revision `5a8a6c080a7cab0894e78d2d4dd28ee135b0808f`.
 
-The complete investigation as reviewed before acceptance is retained in [history](history/w0-investigation.md). Current architecture is indexed by [W1 design](w1-design.md).
+The complete reviewed investigation remains available at its [immutable accepted revision](https://github.com/dornglut/werkstatt/blob/5a8a6c080a7cab0894e78d2d4dd28ee135b0808f/docs/w0-investigation.md). Current architecture is indexed by [W1 design](w1-design.md).
 
 ## Question
 

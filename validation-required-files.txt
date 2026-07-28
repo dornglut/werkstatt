@@ -10,11 +10,6 @@ docs/README.md
 docs/actor-workflows.md
 docs/authority-workspace.md
 docs/evidence-review.md
-docs/history/w0-investigation.md
-docs/history/w0-organization-decision-input.md
-docs/history/w0-product-architecture.md
-docs/history/w0-security-model.md
-docs/history/w0-w1-readiness.md
 docs/organization-decision-input.md
 docs/policy-and-security.md
 docs/ports-and-storage.md

@@ -4,7 +4,7 @@
 
 Accepted W0 product boundary. Accepted as part of pull request #3 at revision `5a8a6c080a7cab0894e78d2d4dd28ee135b0808f`.
 
-W1 refines this boundary through [W1 work-domain and system design](w1-design.md). The original complete W0 proposal is retained in [history](history/w0-product-architecture.md).
+W1 refines this boundary through [W1 work-domain and system design](w1-design.md). The complete reviewed W0 document remains available at its [immutable accepted revision](https://github.com/dornglut/werkstatt/blob/5a8a6c080a7cab0894e78d2d4dd28ee135b0808f/docs/product-architecture.md).
 
 ## Product statement
 

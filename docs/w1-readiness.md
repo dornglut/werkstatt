@@ -6,7 +6,7 @@ W0-to-W1 gate satisfied.
 
 W0 was accepted at `5a8a6c080a7cab0894e78d2d4dd28ee135b0808f`. Accepted ADR 0005 authorizes W1 design. [Issue #6](https://github.com/dornglut/werkstatt/issues/6) owns the active work.
 
-The complete pre-W1 readiness contract is retained in [history](history/w0-w1-readiness.md).
+The complete pre-W1 readiness contract remains available at its [immutable accepted W0 revision](https://github.com/dornglut/werkstatt/blob/5a8a6c080a7cab0894e78d2d4dd28ee135b0808f/docs/w1-readiness.md).
 
 ## Accepted W0 decisions
 

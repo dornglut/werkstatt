@@ -6,7 +6,7 @@ Accepted W0 security baseline. Accepted as part of pull request #3 at revision `
 
 W1 converts this baseline into explicit capability, policy, approval, authority, workspace, adapter, storage, evidence, and error contracts. See [Policy and security](policy-and-security.md), [Authority and workspace](authority-workspace.md), and [Ports and storage](ports-and-storage.md).
 
-The original complete W0 threat analysis is retained in [history](history/w0-security-model.md).
+The complete reviewed W0 threat analysis remains available at its [immutable accepted revision](https://github.com/dornglut/werkstatt/blob/5a8a6c080a7cab0894e78d2d4dd28ee135b0808f/docs/security-model.md).
 
 ## Security objective
 
