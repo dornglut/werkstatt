@@ -40,15 +40,30 @@ W0 defines the product boundary, authority model, human and actor workflows, sec
 - [Human and actor workflows](docs/actor-workflows.md)
 - [Security and trust model](docs/security-model.md)
 - [W1 readiness](docs/w1-readiness.md)
+- [External references](docs/references.md)
+
+## Validation
+
+Run the repository-owned read-only validator:
+
+```text
+python scripts/validate.py
+```
+
+Pull requests and pushes to `main` call the same command through the pinned reusable validation workflow. Validation checks required authority files, UTF-8 text, final newlines, whitespace, repository-relative links, file-size limits, and the read-only workflow contract.
 
 ## Work authority
 
 - [Program issue #1](https://github.com/dornglut/werkstatt/issues/1)
 - [W0 investigation issue #2](https://github.com/dornglut/werkstatt/issues/2)
-- [Organization reevaluation dornglut/engineering#23](https://github.com/dornglut/engineering/issues/23)
+- [Accepted organization ADR 0005](https://github.com/dornglut/engineering/blob/main/adrs/0005-authorize-werkstatt-pilot.md)
 
 Git, repository source, accepted architecture, issues, pull requests, validation, and merge records retain their existing authority. Werkstatt-generated packets, matrices, summaries, and execution state are derived or local operational material and must not become parallel project authority.
 
+## License
+
+Werkstatt is licensed under the [MIT License](LICENSE).
+
 ## Development status
 
-Only documentation and issue work are authorized in W0. Rust implementation begins no earlier than W2 after W0 and W1 are accepted and the organization decision permits the bounded pilot.
+Only documentation and issue work are authorized in W0. Rust implementation begins no earlier than W2 after W0 and W1 are accepted and their required gates are satisfied.

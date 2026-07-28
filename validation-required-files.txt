@@ -1,0 +1,18 @@
+# Required repository authority and validation files
+.github/workflows/validate.yml
+AGENTS.md
+ARCHITECTURE.md
+LICENSE
+README.md
+ROADMAP.md
+TESTING.md
+docs/README.md
+docs/actor-workflows.md
+docs/organization-decision-input.md
+docs/product-architecture.md
+docs/references.md
+docs/security-model.md
+docs/w0-investigation.md
+docs/w1-readiness.md
+scripts/validate.py
+validation-required-files.txt
