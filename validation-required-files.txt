@@ -1,0 +1,6 @@
+# Required repository authority and validation files
+README.md
+LICENSE
+validation-required-files.txt
+scripts/validate.py
+.github/workflows/validate.yml
