@@ -13,9 +13,9 @@ Relevant lessons:
 
 - rich clients use a versioned bidirectional protocol with initialization, threads, turns, streamed items, diffs, approvals, and authentication;
 - schemas can be generated for the installed Codex version;
-- provider threads/turns remain actor-adapter state, not Werkstatt WorkItems or acceptance;
+- provider threads and turns remain actor-adapter state, not Werkstatt WorkItems or acceptance;
 - provider approval requests must be evaluated through Werkstatt policy and cannot widen it;
-- experimental fields and transports require explicit capability/version handling.
+- experimental fields and transports require explicit capability and version handling.
 
 ### OpenAI Symphony
 
@@ -35,7 +35,7 @@ Relevant lessons:
 Relevant lessons:
 
 - requirements, plans, tasks, and cross-artifact consistency can improve agent handoff;
-- Werkstatt adopts progressive formalization but rejects universal generated specification/task authority.
+- Werkstatt adopts progressive formalization but rejects universal generated specification and task authority.
 
 ## Interoperability protocols
 
@@ -72,7 +72,7 @@ Relevant lessons:
 - linked worktrees share repository data while retaining separate working trees and per-worktree state;
 - porcelain output is intended for stable scripting;
 - Git worktree locking protects administrative worktree handling and is distinct from Werkstatt’s writer lease;
-- worktree move/repair/prune/remove behavior remains adapter-specific.
+- worktree move, repair, prune, and remove behavior remains adapter-specific.
 
 ## SQLite references
 
@@ -81,16 +81,19 @@ Relevant lessons:
 - [Foreign keys](https://www.sqlite.org/foreignkeys.html)
 - [PRAGMA reference](https://www.sqlite.org/pragma.html)
 - [Database file format](https://www.sqlite.org/fileformat.html)
+- [Official application-ID magic registry](https://github.com/sqlite/sqlite/blob/master/magic.txt)
 
 Relevant lessons:
 
-- all reads/writes occur within transactions;
+- all reads and writes occur within transactions;
 - multiple readers are supported but only one write transaction exists at a time;
 - WAL permits readers with one writer but requires same-host shared memory, WAL/checkpoint handling, and companion files;
 - foreign keys must be enabled explicitly per connection rather than assuming defaults;
 - `application_id` can identify the application database format;
 - `user_version` is application-owned schema-version storage;
 - local storage transactions must not wrap long-running network, process, or actor work.
+
+The W1 design reserves provisional application ID `0x574B5354` (`WKST`). It was absent from the current official `magic.txt` registry during W1 review. W2 must recheck that registry at implementation pickup and stop for a design correction if a collision appears.
 
 ## Security and validation references
 
