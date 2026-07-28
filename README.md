@@ -11,3 +11,17 @@ Current work is owned by:
 - [organization reevaluation issue dornglut/engineering#23](https://github.com/dornglut/engineering/issues/23).
 
 The first accepted phase defines the product boundary, authority model, human and agent workflows, security model, and implementation gates before Rust implementation begins.
+
+## Validation
+
+Canonical read-only validation:
+
+```text
+python scripts/validate.py
+```
+
+The same command is invoked through the pinned organization-owned reusable validation workflow for pull requests and pushes to `main`.
+
+## License
+
+Werkstatt is proposed under the [MIT License](LICENSE). The license remains reviewable until the bootstrap pull request is explicitly accepted and merged.
