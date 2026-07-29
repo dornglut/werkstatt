@@ -9,9 +9,6 @@ pub enum ErrorCode {
     InvalidTransition,
     TerminalExecution,
     EvidenceUnavailable,
-    StorageConflict,
-    StorageFormat,
-    StorageBusy,
 }
 
 impl ErrorCode {
@@ -22,9 +19,6 @@ impl ErrorCode {
             Self::InvalidTransition => "transition.invalid",
             Self::TerminalExecution => "execution.terminal",
             Self::EvidenceUnavailable => "evidence.unavailable",
-            Self::StorageConflict => "storage.conflict",
-            Self::StorageFormat => "storage.format",
-            Self::StorageBusy => "storage.busy",
         }
     }
 }
