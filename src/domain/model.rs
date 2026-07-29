@@ -12,18 +12,102 @@ pub struct RevisionRef {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AuthorityObservation {
-    pub id: AuthorityObservationId,
-    pub source: String,
-    pub revision: RevisionRef,
-    pub facts: String,
+    id: AuthorityObservationId,
+    source: String,
+    revision: RevisionRef,
+    facts: String,
+}
+
+impl AuthorityObservation {
+    pub fn new(
+        id: AuthorityObservationId,
+        source: impl Into<String>,
+        revision: RevisionRef,
+        facts: impl Into<String>,
+    ) -> Result<Self, DomainError> {
+        let source = source.into();
+        let facts = facts.into();
+        if source.trim().is_empty() || revision.value.trim().is_empty() || facts.trim().is_empty() {
+            return Err(DomainError::new(
+                ErrorCode::InvalidAuthority,
+                "authority.observe",
+                "authority observations require source, revision, and facts",
+                false,
+                "supply the observed authority identity, revision, and bounded facts",
+            ));
+        }
+        Ok(Self {
+            id,
+            source,
+            revision,
+            facts,
+        })
+    }
+
+    pub fn id(&self) -> AuthorityObservationId {
+        self.id
+    }
+
+    pub fn source(&self) -> &str {
+        &self.source
+    }
+
+    pub fn revision(&self) -> &RevisionRef {
+        &self.revision
+    }
+
+    pub fn facts(&self) -> &str {
+        &self.facts
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct WorkContract {
-    pub id: ContractId,
-    pub work_item: WorkItemId,
-    pub authority_revision: RevisionRef,
-    pub version: u32,
+    id: ContractId,
+    work_item: WorkItemId,
+    authority_revision: RevisionRef,
+    version: u32,
+}
+
+impl WorkContract {
+    pub fn new(
+        id: ContractId,
+        work_item: WorkItemId,
+        authority_revision: RevisionRef,
+        version: u32,
+    ) -> Result<Self, DomainError> {
+        if version == 0 || !authority_revision.immutable || authority_revision.value.trim().is_empty() {
+            return Err(DomainError::new(
+                ErrorCode::InvalidContract,
+                "contract.create",
+                "work contracts require a positive version and immutable authority revision",
+                false,
+                "bind the contract to a complete immutable authority observation",
+            ));
+        }
+        Ok(Self {
+            id,
+            work_item,
+            authority_revision,
+            version,
+        })
+    }
+
+    pub fn id(&self) -> ContractId {
+        self.id
+    }
+
+    pub fn work_item(&self) -> WorkItemId {
+        self.work_item
+    }
+
+    pub fn authority_revision(&self) -> &RevisionRef {
+        &self.authority_revision
+    }
+
+    pub fn version(&self) -> u32 {
+        self.version
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -33,24 +117,70 @@ pub enum WorkState {
     Completed,
     Cancelled,
 }
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum LifecycleStage {
     Implement,
     Review,
     Accepted,
 }
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct WorkItem {
+    id: WorkItemId,
+    state: WorkState,
+    lifecycle_stage: LifecycleStage,
+}
+
+impl WorkItem {
+    pub fn new(id: WorkItemId, state: WorkState, lifecycle_stage: LifecycleStage) -> Self {
+        Self {
+            id,
+            state,
+            lifecycle_stage,
+        }
+    }
+
+    pub fn id(&self) -> WorkItemId {
+        self.id
+    }
+
+    pub fn state(&self) -> WorkState {
+        self.state
+    }
+
+    pub fn lifecycle_stage(&self) -> LifecycleStage {
+        self.lifecycle_stage
+    }
+
+    pub fn observe_execution_success(&self, execution: &Execution) -> Result<(), DomainError> {
+        if execution.state != ExecutionState::Succeeded {
+            return Err(DomainError::new(
+                ErrorCode::InvalidTransition,
+                "work.observe_execution_success",
+                "only a succeeded execution may be recorded as successful",
+                false,
+                "finish the execution before recording its outcome",
+            ));
+        }
+        Ok(())
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SynchronizationState {
     Current,
     Stale,
     Conflict,
 }
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ReconciliationState {
     NotStarted,
     Pending,
     Reconciled,
 }
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ExecutionState {
     Prepared,
@@ -106,6 +236,7 @@ impl Execution {
         self.state = target;
         Ok(())
     }
+
     pub fn retry(&self) -> Result<Self, DomainError> {
         if !self.state.terminal() {
             return Err(DomainError::new(
@@ -132,12 +263,14 @@ pub enum EvidenceResult {
     Unavailable,
     Stale,
 }
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum EvidenceSubject {
     LocalExecutor,
     IndependentValidation,
     GeneratedReviewPacket,
 }
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Evidence {
     pub id: EvidenceId,
@@ -145,6 +278,7 @@ pub struct Evidence {
     pub revision: RevisionRef,
     pub result: EvidenceResult,
 }
+
 impl Evidence {
     pub fn invalidated_by(&mut self, moved_to: &RevisionRef) {
         if self.revision != *moved_to {
@@ -159,17 +293,20 @@ pub enum FindingSeverity {
     Warning,
     Blocking,
 }
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Finding {
     pub id: FindingId,
     pub severity: FindingSeverity,
     pub resolved: bool,
 }
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum Readiness {
     Ready,
     Blocked,
 }
+
 pub fn readiness(evidence: &[Evidence], findings: &[Finding]) -> Readiness {
     let evidence_satisfies = evidence.iter().any(|item| {
         item.subject == EvidenceSubject::IndependentValidation
