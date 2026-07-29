@@ -1,8 +1,6 @@
 use std::{path::Path, time::Duration};
 
-use rusqlite::{
-    Connection, Error as SqlError, OptionalExtension, TransactionBehavior, params,
-};
+use rusqlite::{Connection, Error as SqlError, OptionalExtension, TransactionBehavior, params};
 use thiserror::Error;
 use uuid::Uuid;
 
