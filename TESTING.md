@@ -25,7 +25,7 @@ Before handoff, verify:
 - no tracked file exceeds 131,072 raw bytes;
 - the workflow inventory and immutable reusable-workflow pin are exact;
 - lifecycle wording distinguishes accepted W0, active W1, and future W2;
-- W0 proposal evidence is preserved under `docs/history/`;
+- W0 historical evidence remains available through immutable Git history without a duplicate archive tree;
 - no Rust, Cargo, SQLite migration, command runtime, agent integration, GitHub write integration, or Runenwerk code entered W1;
 - the W1 design covers every required output in issue #6;
 - the exact reviewed feature head passes CI;
@@ -67,21 +67,23 @@ Do not report unavailable evidence as passed.
 
 ## W2 validation transition
 
-W1 binds W2’s required implementation validation but does not change the canonical command yet.
+W1 binds W2’s implementation validation while retaining the existing canonical command:
 
-W2 must choose one repository-owned canonical command that includes:
+```text
+python scripts/validate.py
+```
 
-- formatting;
-- locked compilation and tests;
-- strict linting;
-- documentation/authority/link/file-size checks;
-- CLI contract and fixture tests;
-- Git adapter tests;
-- SQLite integrity, foreign-key, transaction, and schema tests;
+W2 extends that command, in deterministic order, to include:
+
+- the existing documentation, authority, link, file-size, workflow-pin, and required-file checks;
+- `cargo fmt --all --check`;
+- `cargo test --workspace --locked`;
+- `cargo clippy --workspace --all-targets --locked -- -D warnings`;
+- bounded CLI-contract, fixture, Git-adapter, and SQLite integrity tests required by the accepted W2 specification;
 - exact-head CI;
 - accepted-main validation.
 
-The W2 implementation issue must decide whether to extend `scripts/validate.py` or add a durable Rust validation entrypoint. It must not create multiple competing gates.
+W2 must not add an `xtask` or second canonical gate. Focused Cargo commands may support iteration but do not replace the repository baseline.
 
 ## Validation limitations
 
