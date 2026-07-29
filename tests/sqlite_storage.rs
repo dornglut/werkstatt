@@ -2,7 +2,7 @@ use std::fs;
 
 use rusqlite::Connection;
 use tempfile::tempdir;
-use werkstatt::storage::{APPLICATION_ID, Database, SCHEMA_VERSION, StorageError};
+use werkstatt::adapters::{APPLICATION_ID, Database, SCHEMA_VERSION, StorageError};
 
 fn path() -> (tempfile::TempDir, std::path::PathBuf) {
     let directory = tempdir().unwrap();
