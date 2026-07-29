@@ -157,7 +157,7 @@ impl WorkItem {
     }
 
     pub fn observe_execution_success(&self, execution: &Execution) -> Result<(), DomainError> {
-        if execution.state != ExecutionState::Succeeded {
+        if execution.state() != ExecutionState::Succeeded {
             return Err(DomainError::new(
                 ErrorCode::InvalidTransition,
                 "work.observe_execution_success",
@@ -201,12 +201,32 @@ impl ExecutionState {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Execution {
-    pub id: ExecutionId,
-    pub contract_id: ContractId,
-    pub state: ExecutionState,
+    id: ExecutionId,
+    contract_id: ContractId,
+    state: ExecutionState,
 }
 
 impl Execution {
+    pub fn new(id: ExecutionId, contract_id: ContractId) -> Self {
+        Self {
+            id,
+            contract_id,
+            state: ExecutionState::Prepared,
+        }
+    }
+
+    pub fn id(&self) -> ExecutionId {
+        self.id
+    }
+
+    pub fn contract_id(&self) -> ContractId {
+        self.contract_id
+    }
+
+    pub fn state(&self) -> ExecutionState {
+        self.state
+    }
+
     pub fn transition(&mut self, target: ExecutionState) -> Result<(), DomainError> {
         if self.state.terminal() {
             return Err(DomainError::new(
@@ -250,11 +270,7 @@ impl Execution {
                 "finish or cancel the current attempt",
             ));
         }
-        Ok(Self {
-            id: ExecutionId::new(),
-            contract_id: self.contract_id,
-            state: ExecutionState::Prepared,
-        })
+        Ok(Self::new(ExecutionId::new(), self.contract_id))
     }
 }
 
@@ -276,13 +292,43 @@ pub enum EvidenceSubject {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Evidence {
-    pub id: EvidenceId,
-    pub subject: EvidenceSubject,
-    pub revision: RevisionRef,
-    pub result: EvidenceResult,
+    id: EvidenceId,
+    subject: EvidenceSubject,
+    revision: RevisionRef,
+    result: EvidenceResult,
 }
 
 impl Evidence {
+    pub fn new(
+        id: EvidenceId,
+        subject: EvidenceSubject,
+        revision: RevisionRef,
+        result: EvidenceResult,
+    ) -> Self {
+        Self {
+            id,
+            subject,
+            revision,
+            result,
+        }
+    }
+
+    pub fn id(&self) -> EvidenceId {
+        self.id
+    }
+
+    pub fn subject(&self) -> EvidenceSubject {
+        self.subject
+    }
+
+    pub fn revision(&self) -> &RevisionRef {
+        &self.revision
+    }
+
+    pub fn result(&self) -> EvidenceResult {
+        self.result
+    }
+
     pub fn invalidated_by(&mut self, moved_to: &RevisionRef) {
         if self.revision != *moved_to {
             self.result = EvidenceResult::Stale;
@@ -299,9 +345,31 @@ pub enum FindingSeverity {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Finding {
-    pub id: FindingId,
-    pub severity: FindingSeverity,
-    pub resolved: bool,
+    id: FindingId,
+    severity: FindingSeverity,
+    resolved: bool,
+}
+
+impl Finding {
+    pub fn new(id: FindingId, severity: FindingSeverity, resolved: bool) -> Self {
+        Self {
+            id,
+            severity,
+            resolved,
+        }
+    }
+
+    pub fn id(&self) -> FindingId {
+        self.id
+    }
+
+    pub fn severity(&self) -> FindingSeverity {
+        self.severity
+    }
+
+    pub fn resolved(&self) -> bool {
+        self.resolved
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -312,12 +380,12 @@ pub enum Readiness {
 
 pub fn readiness(evidence: &[Evidence], findings: &[Finding]) -> Readiness {
     let evidence_satisfies = evidence.iter().any(|item| {
-        item.subject == EvidenceSubject::IndependentValidation
-            && item.result == EvidenceResult::Passed
+        item.subject() == EvidenceSubject::IndependentValidation
+            && item.result() == EvidenceResult::Passed
     });
     let blocking = findings
         .iter()
-        .any(|finding| finding.severity == FindingSeverity::Blocking && !finding.resolved);
+        .any(|finding| finding.severity() == FindingSeverity::Blocking && !finding.resolved());
     if evidence_satisfies && !blocking {
         Readiness::Ready
     } else {
