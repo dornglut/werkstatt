@@ -169,7 +169,10 @@ fn public_storage_errors_are_actionable_and_redact_private_paths() {
     connection.pragma_update(None, "user_version", 1).unwrap();
     drop(connection);
 
-    let error = Database::open(&path).unwrap_err();
+    let error = match Database::open(&path) {
+        Ok(_) => panic!("wrong application identity must be rejected"),
+        Err(error) => error,
+    };
     let rendered = error.to_string();
     assert_eq!(error.code(), "storage.format");
     assert_eq!(error.operation(), "database.open");
