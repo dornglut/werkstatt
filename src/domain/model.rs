@@ -76,7 +76,10 @@ impl WorkContract {
         authority_revision: RevisionRef,
         version: u32,
     ) -> Result<Self, DomainError> {
-        if version == 0 || !authority_revision.immutable || authority_revision.value.trim().is_empty() {
+        if version == 0
+            || !authority_revision.immutable
+            || authority_revision.value.trim().is_empty()
+        {
             return Err(DomainError::new(
                 ErrorCode::InvalidContract,
                 "contract.create",
