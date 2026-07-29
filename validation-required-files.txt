@@ -35,8 +35,8 @@ src/domain/model.rs
 src/application/mod.rs
 src/ports/mod.rs
 src/adapters/mod.rs
+src/adapters/sqlite.rs
 src/storage/mod.rs
-src/storage/sqlite.rs
 src/storage/schema_v1.sql
 tests/domain_transitions.rs
 tests/sqlite_storage.rs
