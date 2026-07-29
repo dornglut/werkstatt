@@ -48,7 +48,7 @@ W1 permits documentation, architecture, issue, and review work only. It does not
 - Do not create generated or operational artifacts as parallel issue, roadmap, architecture, validation, or acceptance authority.
 - Do not introduce source-writing validation workflows or direct protected-branch writes.
 - Keep each tracked file below 131,072 raw bytes unless accepted authority grants an exception and another execution path exists.
-- Preserve exact W0 proposals under `docs/history/`; current canonical documents must state accepted lifecycle status truthfully.
+- Preserve accepted W0 evidence through immutable Git history; do not create duplicate archive trees, and keep current canonical documents lifecycle-accurate.
 
 ## W1 quality gates
 
