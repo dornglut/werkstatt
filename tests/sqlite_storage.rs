@@ -118,6 +118,7 @@ fn diagnostics_detect_foreign_key_violations() {
     let (_directory, path) = path();
     let database = Database::open(&path).unwrap();
     let raw = Connection::open(&path).unwrap();
+    raw.pragma_update(None, "foreign_keys", "OFF").unwrap();
     raw.execute(
         "INSERT INTO work_items(id, project_id, contract_revision, version) VALUES ('work', 'missing', 'revision', 0)",
         [],
