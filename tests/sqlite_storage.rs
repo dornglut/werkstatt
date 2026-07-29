@@ -77,21 +77,41 @@ fn rollback_and_optimistic_conflict_leave_no_partial_project_update() {
     let (_directory, path) = path();
     let mut database = Database::open(&path).unwrap();
     database.register_project("project", "before").unwrap();
+
+    let trigger = Connection::open(&path).unwrap();
+    trigger
+        .execute_batch(
+            "CREATE TRIGGER fail_project_activity
+             BEFORE INSERT ON activities
+             BEGIN
+                 SELECT RAISE(ABORT, 'injected activity failure');
+             END;",
+        )
+        .unwrap();
+    drop(trigger);
+
     assert!(matches!(
-        database.update_project_with_activity("project", 0, "after", true),
-        Err(StorageError::Conflict { .. })
+        database.update_project_with_activity("project", 0, "after"),
+        Err(StorageError::Sql { .. })
     ));
     assert_eq!(
         database.project_name("project").unwrap().as_deref(),
         Some("before")
     );
     assert_eq!(database.activity_count().unwrap(), 0);
+
+    let trigger = Connection::open(&path).unwrap();
+    trigger
+        .execute_batch("DROP TRIGGER fail_project_activity;")
+        .unwrap();
+    drop(trigger);
+
     assert!(matches!(
-        database.update_project_with_activity("project", 4, "after", false),
+        database.update_project_with_activity("project", 4, "after"),
         Err(StorageError::Conflict { .. })
     ));
     database
-        .update_project_with_activity("project", 0, "after", false)
+        .update_project_with_activity("project", 0, "after")
         .unwrap();
     assert_eq!(
         database.project_name("project").unwrap().as_deref(),
@@ -109,7 +129,7 @@ fn bounded_busy_handling_returns_retryable_structured_error() {
     let locker = Connection::open(&path).unwrap();
     locker.execute_batch("BEGIN IMMEDIATE;").unwrap();
     let error = database
-        .update_project_with_activity("project", 0, "after", false)
+        .update_project_with_activity("project", 0, "after")
         .unwrap_err();
     assert!(matches!(error, StorageError::Busy { .. }));
     assert_eq!(error.code(), "storage.busy");
