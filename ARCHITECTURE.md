@@ -4,17 +4,17 @@
 
 Dornglut Werkstatt is a human-first engineering workbench with optional policy-controlled execution for human, assisted, delegated, and autonomous software development.
 
-Its core responsibility is to make accepted work understandable, executable, reviewable, and observable without replacing the repositories and systems that already own source, architecture, work authorization, validation, and acceptance.
+It makes accepted work understandable, executable, reviewable, and observable without replacing the repositories and systems that own source, architecture, work authorization, validation, and acceptance.
 
-## Boundary
+## Authority boundary
 
-Werkstatt may own local operational state such as projects, workspace registrations, actor sessions, approvals, leases, execution attempts, generated packets, local evidence, cached projections, and user preferences.
+Werkstatt may own local operational state such as project registrations, authority observations, workspaces, actor sessions, policies, approvals, leases, executions, activities, artifacts, local evidence, findings, and preferences.
 
 Werkstatt must not replace:
 
 - Git and repository source;
-- code and executable tests as current-behavior authority;
-- accepted ADRs and architecture documents;
+- code and executable tests as behavior authority;
+- accepted ADRs and designs;
 - repository issues as Dornglut work authority;
 - repository roadmaps as durable sequence;
 - pull requests as delivery and review surfaces;
@@ -23,125 +23,101 @@ Werkstatt must not replace:
 
 ## Four planes
 
-### Authority plane
+| Plane | Owns |
+|---|---|
+| Authority | external repositories, decisions, work, sequence, PR, CI, and acceptance facts |
+| Assistance | revision-bound packets, matrices, plans, summaries, and projections |
+| Execution | local workspaces, sessions, policies, approvals, leases, attempts, activities, and recovery |
+| Validation | independent evidence, findings, review, acceptance, and reconciliation |
 
-Contains durable and externally owned facts:
+Generated or operational material cannot silently move into the authority plane.
 
-- repositories and revisions;
-- code and tests;
-- ADRs and accepted designs;
-- issues and roadmaps;
-- pull requests, review, CI, and merge records.
-
-### Assistance plane
-
-Contains derived guidance and views:
-
-- work packets;
-- current-state and ownership matrices;
-- implementation checklists;
-- review packets;
-- dependency and program projections;
-- generated summaries.
-
-Every derived artifact identifies its source, source revision, generation time, and staleness. It cannot independently authorize work or acceptance.
-
-### Execution plane
-
-Contains temporary operational state:
-
-- isolated workspaces;
-- actor sessions;
-- narrow leases;
-- approvals;
-- retries and resource limits;
-- activity and logs;
-- branch and workspace expectations.
-
-Execution state does not become project planning or architecture authority.
-
-### Validation plane
-
-Contains independent evidence:
-
-- repository-defined commands;
-- focused checks;
-- exact-head CI;
-- review findings;
-- manual, runtime, usability, security, and performance evidence when required.
-
-An executor may report observed results but cannot certify or accept its own work merely by declaration.
-
-## Target layers
+## Layers and dependency direction
 
 ```text
-Runenwerk graphical frontend — later
-    portfolio, work, execution, evidence, approvals, diff, review
-
-Application services
-    use cases, coordination, projections, synchronization
-
-Work domain
-    projects, programs, work items, contracts, roles, capabilities,
-    requirements, executions, evidence, findings, review, acceptance
-
-Ports and adapters
-    Git, GitHub, local work sources, workspaces, processes, storage,
-    Codex, offline actor runtimes, validation sources
+CLI and future Runenwerk frontend
+    -> application use cases and projections
+        -> work domain and ports
+            <- concrete adapters
 ```
-
-## Dependency direction
 
 ```text
 domain
-    depends on no graphical host, model provider, forge, or storage implementation
+    depends on no graphical host, model provider, forge, process runtime,
+    protocol, filesystem layout, or storage implementation
 
-application services
-    depend on the domain and ports
+application
+    depends on domain and port contracts
 
 adapters
-    implement ports for concrete systems
+    implement repository, work-source, workspace, command, actor,
+    validation, storage, launcher, clock, and publication ports
 
-CLI and Runenwerk frontend
-    compose application services and adapters
+frontends
+    compose application services and concrete adapters
 ```
 
-The future Runenwerk frontend depends on the headless Werkstatt core. The core must not depend on Runenwerk.
+The future Runenwerk frontend depends on the headless core. The core must not depend on Runenwerk.
 
-## Initial implementation shape
+## Core distinctions
 
-The first implementation should be one Rust package containing a library and CLI binary with internal modules. Crates are split only after a real dependency, release, platform, security, or compilation boundary is demonstrated.
+Werkstatt keeps separate:
 
-Initial concrete choices should be simple:
+- Project and external authority source;
+- Program/Phase projection and WorkItem;
+- WorkItem state and lifecycle stage;
+- WorkContract and derived Plan;
+- Actor, Role, Capability, Policy, and Approval;
+- Workspace, Git administrative state, and WriterLease;
+- Execution state and WorkItem acceptance;
+- Activity, Artifact, Evidence, Finding, Review, ValidationReceipt, AcceptanceRecord, and Reconciliation;
+- provider session/task identifiers and Werkstatt domain identifiers.
 
-- Git repositories;
-- GitHub issues and pull requests for Dornglut;
+No single `status` field or receipt may collapse these meanings.
+
+## W1 canonical detail
+
+- [W1 design index](docs/w1-design.md)
+- [Work domain](docs/work-domain.md)
+- [Policy and security](docs/policy-and-security.md)
+- [Authority and workspace](docs/authority-workspace.md)
+- [Evidence and review](docs/evidence-review.md)
+- [Ports and storage](docs/ports-and-storage.md)
+- [W2 CLI contract](docs/w2-cli-contract.md)
+- [W2 implementation specification](docs/w2-implementation-spec.md)
+
+## Initial concrete choices
+
+W2 is designed as:
+
+- one Rust package with a library and synchronous CLI;
+- Git CLI inspection rather than a Git library;
+- local Markdown/JSON plus optional read-only `gh` issue import;
 - SQLite for local operational state;
-- repository-defined named validation commands;
-- Codex as the first delegated actor adapter;
-- a generic subprocess protocol for offline actor runtimes;
-- a Runenwerk frontend only after the headless human workflow is proven.
+- shell-free named validation command execution;
+- existing editor, terminal, Git, and GitHub tooling;
+- no model, agent, network client, GitHub mutation, or Runenwerk dependency.
 
-These choices sit behind narrow interfaces without requiring a provider-neutral execution platform before the product is validated.
+Later adapters may support Codex App Server, offline runtimes, MCP tools/context, A2A agents, richer GitHub integration, sandboxes, and the Runenwerk frontend. Their provider state remains adapter state.
 
-## State separation
+## Persistence boundary
 
-Werkstatt keeps separate state models for:
+SQLite stores local current state and a bounded activity journal. External authority is represented through source references and revision observations.
 
-- work-item lifecycle;
-- lifecycle stage;
-- execution attempt;
-- decision artifact;
-- external authority synchronization.
-
-No single `status` field may represent all of these meanings.
+- short explicit transactions;
+- one writer at a time;
+- no network/process call inside a database transaction;
+- foreign keys enabled explicitly;
+- application-owned schema version and migrations;
+- WAL optional for later measured concurrency, never distributed coordination;
+- local database deletion cannot delete external project authority.
 
 ## Security boundary
 
-A Git worktree is source isolation, not a security sandbox. Command execution, filesystem access, network access, secrets, dependency changes, workflow changes, publication, destructive actions, and merge require explicit policies and observable approvals.
+A checkout or Git worktree is not a sandbox. Filesystem, commands, network, secrets, dependencies, workflows, publication, destructive actions, resources, cancellation, recovery, review, and merge require explicit policies in phases that execute them.
 
-See [docs/security-model.md](docs/security-model.md).
+W2 records manual observations and limitations. W3 must prove enforcement before delegated execution.
 
 ## Current maturity
 
-Only W0 investigation is authorized. This document describes the target boundary; it does not claim that an implementation exists.
+W0 is accepted. W1 is active and documentation-only. No product implementation exists.
