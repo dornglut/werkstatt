@@ -6,6 +6,8 @@ use thiserror::Error;
 pub enum ErrorCode {
     InvalidAuthority,
     InvalidContract,
+    InvalidObservation,
+    InvalidSource,
     InvalidTransition,
     TerminalExecution,
     EvidenceUnavailable,
@@ -16,6 +18,8 @@ impl ErrorCode {
         match self {
             Self::InvalidAuthority => "authority.invalid",
             Self::InvalidContract => "contract.invalid",
+            Self::InvalidObservation => "observation.invalid",
+            Self::InvalidSource => "source.invalid",
             Self::InvalidTransition => "transition.invalid",
             Self::TerminalExecution => "execution.terminal",
             Self::EvidenceUnavailable => "evidence.unavailable",

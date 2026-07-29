@@ -1,3 +1,5 @@
-//! Application ports enter with their owning use cases.
-//!
-//! W2A has no application use case and therefore defines no speculative port.
+mod repository;
+mod work_source;
+
+pub use repository::RepositoryReader;
+pub use work_source::{GithubWorkSourceReader, LocalWorkSourceReader};

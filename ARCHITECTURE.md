@@ -49,6 +49,9 @@ domain
 application
     depends on domain and port contracts
 
+ports
+    express use-case-owned read or execution boundaries
+
 adapters
     implement repository, work-source, workspace, command, actor,
     validation, storage, launcher, clock, and publication ports
@@ -58,6 +61,28 @@ frontends
 ```
 
 The future Runenwerk frontend depends on the headless core. The core must not depend on Runenwerk.
+
+## W2B observation boundary
+
+W2B adds no application workflow and no general command port. It adds only repository and work-source read boundaries:
+
+```text
+repository/work-source observation domain values
+    <- repository and work-source read ports
+        <- fixed-argv Git CLI, local-file, and optional read-only gh adapters
+```
+
+The concrete adapters own process, filesystem, Git, `gh`, parsing, timeout, output-bound, and redaction behavior. Domain observations contain provider-neutral identities, exact revisions, normalized facts, synchronization state, limitations, and safe display material only.
+
+Repository identity is distinct from checkout location and Git common-directory identity. Authority decisions use opaque fingerprints and exact revisions, never lossy path rendering. `RepositoryIdentity::observation_fingerprint` is a heuristic derived from observed root revisions and credential-safe remotes; it can change when those observations change and must not be treated as a durable repository identifier. The common-directory key identifies the observed local Git administration location separately. Remote identities remove credentials, query strings, and fragments before entering retained observations.
+
+Git and `gh` are invoked directly with fixed argument vectors, explicit working directories, bounded timeout and output, and no shell. Every Git command overrides `core.fsmonitor=false`, so repository-local fsmonitor programs cannot execute during observation. Git inspection also disables optional locks, prompts, external diff helpers, and text conversion where deterministic output requires it. Bounded diff observations retain separately labelled staged and unstaged statistics and patch sections under one aggregate output limit. No read adapter fetches, writes configuration, updates refs, changes the index/worktree, or mutates GitHub.
+
+A work-source read returns one bounded `ObservedWorkSource`: the exact payload plus a normalized source observation. That observation reuses W2A `AuthorityObservation`, immutable SHA-256 `RevisionRef`, and `SynchronizationState`; it does not create a parallel authority or freshness family. Markdown accepts either canonical leading `Field: value` issue metadata or an explicit `## Work contract` table, rejects duplicate values across forms, and preserves unrecognized metadata and sections as supplemental context. Presentation-only surrounding backticks are removed from scalar metadata such as accepted revisions.
+
+The private JSON helper accepts at most 131,072 bytes, rejects duplicate keys, and limits nesting to 64 levels. The W2B owning issue records the bounded-helper decision and the conditions that require revisiting accepted dependencies.
+
+A mutable GitHub issue is represented as a mutable external source with an immutable exact-payload observation revision, provider update information, and limitations. It is never described as an immutable issue revision. Exported bounded Markdown or schema-version-1 JSON remains the offline fallback.
 
 ## Core distinctions
 
@@ -86,38 +111,26 @@ No single `status` field or receipt may collapse these meanings.
 - [W2 CLI contract](docs/w2-cli-contract.md)
 - [W2 implementation specification](docs/w2-implementation-spec.md)
 
-## Initial concrete choices
-
-W2 is designed as:
-
-- one Rust package with a library and synchronous CLI;
-- Git CLI inspection rather than a Git library;
-- local Markdown/JSON plus optional read-only `gh` issue import;
-- SQLite for local operational state;
-- shell-free named validation command execution;
-- existing editor, terminal, Git, and GitHub tooling;
-- no model, agent, network client, GitHub mutation, or Runenwerk dependency.
-
-Later adapters may support Codex App Server, offline runtimes, MCP tools/context, A2A agents, richer GitHub integration, sandboxes, and the Runenwerk frontend. Their provider state remains adapter state.
-
 ## Persistence boundary
 
-SQLite stores local current state and a bounded activity journal. External authority is represented through source references and revision observations.
+SQLite stores local current state and bounded activities. External authority is represented through source references and revision observations.
 
 - short explicit transactions;
 - one writer at a time;
-- no network/process call inside a database transaction;
+- no network, Git, `gh`, process, or artifact-file call inside a database transaction;
 - foreign keys enabled explicitly;
 - application-owned schema version and migrations;
-- WAL optional for later measured concurrency, never distributed coordination;
+- rollback journal retained for the single-process W2 proof;
 - local database deletion cannot delete external project authority.
+
+W2B does not change schema v1 or begin W2C project-registration workflows.
 
 ## Security boundary
 
 A checkout or Git worktree is not a sandbox. Filesystem, commands, network, secrets, dependencies, workflows, publication, destructive actions, resources, cancellation, recovery, review, and merge require explicit policies in phases that execute them.
 
-W2 records manual observations and limitations. W3 must prove enforcement before delegated execution.
+W2 records observations and limitations. W3 must prove enforcement before delegated execution.
 
 ## Current maturity
 
-W0 and W1 are accepted. W2 is active at the W2A package, domain, and local SQLite foundation only. Git/forge observation, workflow execution, agents, lease enforcement, GitHub mutation, autonomy, and Runenwerk remain absent.
+W0 and W1 are accepted. W2A is accepted at `bd4f12f770fa82d25657f41fd8cff5e3a299a8a1`. W2B is the active read-only repository and work-source observation delivery. Guided commands, validator execution, agents, lease enforcement, GitHub mutation, autonomy, and Runenwerk remain absent.

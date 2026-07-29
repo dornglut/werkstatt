@@ -11,6 +11,7 @@ from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 131_072
+MAX_COMMAND_DIAGNOSTIC_CHARS = 6_000
 TEXT_SUFFIXES = {".md", ".py", ".rs", ".sql", ".txt", ".toml", ".yml", ".yaml"}
 LINK_RE = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 WORKFLOW_PATH = Path(".github/workflows/validate.yml")
@@ -157,6 +158,21 @@ def validate_workflow(failures: list[str]) -> None:
         )
 
 
+def bounded_command_diagnostic(stdout: str, stderr: str) -> str:
+    output = (stdout + stderr).strip()
+    if len(output) <= MAX_COMMAND_DIAGNOSTIC_CHARS:
+        return output
+
+    head_chars = MAX_COMMAND_DIAGNOSTIC_CHARS // 3
+    tail_chars = MAX_COMMAND_DIAGNOSTIC_CHARS - head_chars
+    omitted = len(output) - MAX_COMMAND_DIAGNOSTIC_CHARS
+    return (
+        f"{output[:head_chars]}\n"
+        f"... {omitted} diagnostic characters omitted ...\n"
+        f"{output[-tail_chars:]}"
+    )
+
+
 def validate_cargo(failures: list[str]) -> None:
     commands = (
         ("cargo", "fmt", "--all", "--check"),
@@ -170,8 +186,8 @@ def validate_cargo(failures: list[str]) -> None:
             fail(f"{' '.join(command)}: could not start: {error}", failures)
             continue
         if result.returncode:
-            output = (result.stdout + result.stderr).strip()
-            fail(f"{' '.join(command)}: failed ({result.returncode}): {output[:2000]}", failures)
+            output = bounded_command_diagnostic(result.stdout, result.stderr)
+            fail(f"{' '.join(command)}: failed ({result.returncode}): {output}", failures)
 
 
 def main() -> int:

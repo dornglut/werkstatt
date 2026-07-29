@@ -14,16 +14,27 @@ All operating modes share one role-aware work model. Technical capability does n
 
 ## Current maturity
 
-W0 and W1 are accepted. W2 is active at its bounded W2A domain-and-storage foundation delivery.
+W0 and W1 are accepted. W2A is accepted at `bd4f12f770fa82d25657f41fd8cff5e3a299a8a1`. W2B is the active bounded delivery.
+
+W2B adds read-only repository and work-source observation only:
+
+- shell-free fixed-argument Git CLI inspection;
+- heuristic repository fingerprint, exact head, branch/detached-head, remote, status, worktree, operation, relation, and bounded staged/unstaged diff observations;
+- bounded repository-local Markdown and schema-version-1 JSON normalization;
+- optional bounded read-only `gh issue view` observation using existing human authentication;
+- safe source digests, freshness, limitations, path handling, and credential-redacted remote identities.
 
 It does not yet provide:
 
+- the guided `start -> status -> validate -> review -> reconcile` workflow;
+- source, Git, GitHub, issue, pull-request, or workflow mutation;
+- arbitrary validation-command execution;
 - a Codex or offline-agent adapter;
 - delegated or autonomous execution;
-- GitHub write integration;
+- policy or writer-lease enforcement;
 - a Runenwerk graphical frontend.
 
-W2A provides only the Rust package baseline, domain foundation, and local SQLite storage. Later W2 deliveries remain blocked; no command workflow beyond foundational diagnostics is implemented.
+A registered checkout remains a human-owned working directory, not a process, filesystem, network, or credential sandbox.
 
 ## Start here
 
@@ -49,15 +60,16 @@ Run the repository-owned read-only validator:
 python scripts/validate.py
 ```
 
-Pull requests and pushes to `main` call the same command through the pinned reusable validation workflow. Validation checks required authority files, UTF-8 text, final newlines, whitespace, repository-relative links, file-size limits, and the read-only workflow contract.
+Pull requests and pushes to `main` call the same command through the pinned reusable validation workflow. Validation checks repository authority and text rules, tracked file-size limits, workflow pinning, locked formatting and tests, and strict Clippy.
 
 ## Work authority
 
 - [Program issue #1](https://github.com/dornglut/werkstatt/issues/1)
-- [W1 issue #6](https://github.com/dornglut/werkstatt/issues/6)
+- [W2 umbrella issue #8](https://github.com/dornglut/werkstatt/issues/8)
+- [Active W2B issue #10](https://github.com/dornglut/werkstatt/issues/10)
 - [Accepted organization ADR 0005](https://github.com/dornglut/engineering/blob/main/adrs/0005-authorize-werkstatt-pilot.md)
 
-Git, repository source, accepted architecture, issues, pull requests, validation, and merge records retain their existing authority. Werkstatt-generated packets, matrices, summaries, and execution state are derived or local operational material and must not become parallel project authority.
+Git, repository source, accepted architecture, issues, pull requests, validation, and merge records retain their existing authority. Werkstatt observations, packets, matrices, summaries, and execution state are derived or local operational material and must not become parallel project authority.
 
 ## License
 
@@ -65,4 +77,4 @@ Werkstatt is licensed under the [MIT License](LICENSE).
 
 ## Development boundary
 
-W2 implementation began only after accepted-main validation for W1 commit `a87d8fbc5ac1e4e31d5a3f6b601237cf8e3b8cd9` succeeded. W2A does not add agent, GitHub-write, arbitrary-command, lease-enforcement, autonomous, or Runenwerk features.
+W2B performs read-only observation. It stores no GitHub token, invokes no shell, mutates no external authority, and implements no later W2 command workflow or W3 execution policy.
