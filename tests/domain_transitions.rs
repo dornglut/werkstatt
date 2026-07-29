@@ -27,13 +27,8 @@ fn typed_ids_are_distinct_types() {
 #[test]
 fn immutable_authority_and_contracts_require_complete_inputs() {
     assert!(
-        AuthorityObservation::new(
-            AuthorityObservationId::new(),
-            "",
-            revision("a"),
-            "facts"
-        )
-        .is_err()
+        AuthorityObservation::new(AuthorityObservationId::new(), "", revision("a"), "facts")
+            .is_err()
     );
     assert!(
         WorkContract::new(
