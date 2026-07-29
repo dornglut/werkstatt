@@ -81,11 +81,7 @@ impl DomainError {
         }
     }
 
-    pub fn with_context(
-        mut self,
-        key: impl Into<String>,
-        value: impl Into<String>,
-    ) -> Self {
+    pub fn with_context(mut self, key: impl Into<String>, value: impl Into<String>) -> Self {
         self.context.insert(key, value);
         self
     }
