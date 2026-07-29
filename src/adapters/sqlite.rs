@@ -230,7 +230,6 @@ impl Database {
         id: &str,
         expected_version: i64,
         name: &str,
-        fail_after_update: bool,
     ) -> Result<(), StorageError> {
         let transaction = self
             .connection
@@ -243,11 +242,6 @@ impl Database {
             )
             .map_err(|error| StorageError::sql("project.update", error))?;
         if count != 1 {
-            return Err(StorageError::Conflict {
-                operation: "project.update",
-            });
-        }
-        if fail_after_update {
             return Err(StorageError::Conflict {
                 operation: "project.update",
             });
