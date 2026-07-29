@@ -11,11 +11,17 @@ fn revision(value: &str) -> RevisionRef {
 }
 
 fn execution(state: ExecutionState) -> Execution {
-    Execution {
-        id: ExecutionId::new(),
-        contract_id: ContractId::new(),
-        state,
+    let mut execution = Execution::new(ExecutionId::new(), ContractId::new());
+    match state {
+        ExecutionState::Prepared => {}
+        ExecutionState::Running => execution.transition(ExecutionState::Running).unwrap(),
+        ExecutionState::Succeeded | ExecutionState::Failed => {
+            execution.transition(ExecutionState::Running).unwrap();
+            execution.transition(state).unwrap();
+        }
+        ExecutionState::Cancelled => execution.transition(ExecutionState::Cancelled).unwrap(),
     }
+    execution
 }
 
 #[test]
@@ -62,8 +68,8 @@ fn execution_transitions_are_explicit_and_terminal_retries_have_new_identity() {
     attempt.transition(ExecutionState::Succeeded).unwrap();
     assert!(attempt.transition(ExecutionState::Running).is_err());
     let retry = attempt.retry().unwrap();
-    assert_ne!(attempt.id, retry.id);
-    assert_eq!(retry.state, ExecutionState::Prepared);
+    assert_ne!(attempt.id(), retry.id());
+    assert_eq!(retry.state(), ExecutionState::Prepared);
 }
 
 #[test]
@@ -77,41 +83,37 @@ fn execution_success_does_not_accept_or_complete_work() {
 
 #[test]
 fn readiness_requires_independent_passing_evidence_and_no_blocking_finding() {
-    let local = Evidence {
-        id: EvidenceId::new(),
-        subject: EvidenceSubject::LocalExecutor,
-        revision: revision("a"),
-        result: EvidenceResult::Passed,
-    };
+    let local = Evidence::new(
+        EvidenceId::new(),
+        EvidenceSubject::LocalExecutor,
+        revision("a"),
+        EvidenceResult::Passed,
+    );
     assert_eq!(readiness(&[local], &[]), Readiness::Blocked);
 
-    let unavailable = Evidence {
-        id: EvidenceId::new(),
-        subject: EvidenceSubject::IndependentValidation,
-        revision: revision("a"),
-        result: EvidenceResult::Unavailable,
-    };
+    let unavailable = Evidence::new(
+        EvidenceId::new(),
+        EvidenceSubject::IndependentValidation,
+        revision("a"),
+        EvidenceResult::Unavailable,
+    );
     assert_eq!(readiness(&[unavailable], &[]), Readiness::Blocked);
 
-    let generated = Evidence {
-        id: EvidenceId::new(),
-        subject: EvidenceSubject::GeneratedReviewPacket,
-        revision: revision("a"),
-        result: EvidenceResult::Passed,
-    };
+    let generated = Evidence::new(
+        EvidenceId::new(),
+        EvidenceSubject::GeneratedReviewPacket,
+        revision("a"),
+        EvidenceResult::Passed,
+    );
     assert_eq!(readiness(&[generated], &[]), Readiness::Blocked);
 
-    let independent = Evidence {
-        id: EvidenceId::new(),
-        subject: EvidenceSubject::IndependentValidation,
-        revision: revision("a"),
-        result: EvidenceResult::Passed,
-    };
-    let blocking = Finding {
-        id: FindingId::new(),
-        severity: FindingSeverity::Blocking,
-        resolved: false,
-    };
+    let independent = Evidence::new(
+        EvidenceId::new(),
+        EvidenceSubject::IndependentValidation,
+        revision("a"),
+        EvidenceResult::Passed,
+    );
+    let blocking = Finding::new(FindingId::new(), FindingSeverity::Blocking, false);
     assert_eq!(
         readiness(std::slice::from_ref(&independent), &[blocking]),
         Readiness::Blocked
@@ -121,14 +123,14 @@ fn readiness_requires_independent_passing_evidence_and_no_blocking_finding() {
 
 #[test]
 fn moved_revision_invalidates_evidence_and_error_is_stable_and_actionable() {
-    let mut evidence = Evidence {
-        id: EvidenceId::new(),
-        subject: EvidenceSubject::GeneratedReviewPacket,
-        revision: revision("a"),
-        result: EvidenceResult::Passed,
-    };
+    let mut evidence = Evidence::new(
+        EvidenceId::new(),
+        EvidenceSubject::GeneratedReviewPacket,
+        revision("a"),
+        EvidenceResult::Passed,
+    );
     evidence.invalidated_by(&revision("b"));
-    assert_eq!(evidence.result, EvidenceResult::Stale);
+    assert_eq!(evidence.result(), EvidenceResult::Stale);
 
     let error = execution(ExecutionState::Succeeded)
         .transition(ExecutionState::Running)
