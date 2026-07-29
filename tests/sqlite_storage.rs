@@ -17,7 +17,12 @@ fn initializes_identifiable_versioned_foreign_key_database() {
     assert_eq!(database.application_id().unwrap(), APPLICATION_ID);
     assert_eq!(database.schema_version().unwrap(), SCHEMA_VERSION);
     assert!(database.foreign_keys_enabled().unwrap());
-    assert!(database.migration_checksum().unwrap().starts_with("fnv1a64:"));
+    assert!(
+        database
+            .migration_checksum()
+            .unwrap()
+            .starts_with("fnv1a64:")
+    );
     let diagnostics = database.diagnostics().unwrap();
     assert!(diagnostics.integrity_ok && diagnostics.foreign_key_ok);
     assert!(!diagnostics.clean_shutdown);
