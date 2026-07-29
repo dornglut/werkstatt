@@ -68,11 +68,7 @@ fn execution_transitions_are_explicit_and_terminal_retries_have_new_identity() {
 
 #[test]
 fn execution_success_does_not_accept_or_complete_work() {
-    let work_item = WorkItem::new(
-        WorkItemId::new(),
-        WorkState::Ready,
-        LifecycleStage::Review,
-    );
+    let work_item = WorkItem::new(WorkItemId::new(), WorkState::Ready, LifecycleStage::Review);
     let successful = execution(ExecutionState::Succeeded);
     work_item.observe_execution_success(&successful).unwrap();
     assert_eq!(work_item.state(), WorkState::Ready);
