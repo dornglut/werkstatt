@@ -3,7 +3,8 @@ use std::fmt;
 use uuid::Uuid;
 
 macro_rules! typed_id {
-    ($name:ident) => {
+    ($(#[$metadata:meta])* $name:ident) => {
+        $(#[$metadata])*
         #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
         pub struct $name(Uuid);
 
@@ -27,7 +28,18 @@ macro_rules! typed_id {
     };
 }
 
-typed_id!(ProjectId);
+typed_id!(
+    /// Local project identity.
+    ///
+    /// Entity identifiers are intentionally not interchangeable.
+    ///
+    /// ```compile_fail
+    /// use werkstatt::domain::{ProjectId, WorkItemId};
+    /// let project = ProjectId::new();
+    /// let _work_item: WorkItemId = project;
+    /// ```
+    ProjectId
+);
 typed_id!(WorkItemId);
 typed_id!(ContractId);
 typed_id!(AuthorityObservationId);
