@@ -1,4 +1,3 @@
-/// Narrow storage boundary; concrete SQLite code lives in the adapter layer.
-pub trait StorageDiagnostics {
-    fn integrity_ok(&self) -> bool;
-}
+//! Application ports enter with their owning use cases.
+//!
+//! W2A has no application use case and therefore defines no speculative port.
