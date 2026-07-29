@@ -120,4 +120,4 @@ W2 records manual observations and limitations. W3 must prove enforcement before
 
 ## Current maturity
 
-W0 is accepted. W1 is active and documentation-only. No product implementation exists.
+W0 and W1 are accepted. W2 is active at the W2A package, domain, and local SQLite foundation only. Git/forge observation, workflow execution, agents, lease enforcement, GitHub mutation, autonomy, and Runenwerk remain absent.

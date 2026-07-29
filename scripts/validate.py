@@ -4,13 +4,14 @@
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_FILE_BYTES = 131_072
-TEXT_SUFFIXES = {".md", ".py", ".txt", ".toml", ".yml", ".yaml"}
+TEXT_SUFFIXES = {".md", ".py", ".rs", ".sql", ".txt", ".toml", ".yml", ".yaml"}
 LINK_RE = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 WORKFLOW_PATH = Path(".github/workflows/validate.yml")
 EXPECTED_WORKFLOW = """name: Validate
@@ -42,7 +43,9 @@ def repository_files() -> list[Path]:
     return sorted(
         path
         for path in ROOT.rglob("*")
-        if path.is_file() and ".git" not in path.relative_to(ROOT).parts
+        if path.is_file()
+        and ".git" not in path.relative_to(ROOT).parts
+        and "target" not in path.relative_to(ROOT).parts
     )
 
 
@@ -154,6 +157,23 @@ def validate_workflow(failures: list[str]) -> None:
         )
 
 
+def validate_cargo(failures: list[str]) -> None:
+    commands = (
+        ("cargo", "fmt", "--all", "--check"),
+        ("cargo", "test", "--workspace", "--locked"),
+        ("cargo", "clippy", "--workspace", "--all-targets", "--locked", "--", "-D", "warnings"),
+    )
+    for command in commands:
+        try:
+            result = subprocess.run(command, cwd=ROOT, check=False, text=True, capture_output=True)
+        except OSError as error:
+            fail(f"{' '.join(command)}: could not start: {error}", failures)
+            continue
+        if result.returncode:
+            output = (result.stdout + result.stderr).strip()
+            fail(f"{' '.join(command)}: failed ({result.returncode}): {output[:2000]}", failures)
+
+
 def main() -> int:
     failures: list[str] = []
 
@@ -168,6 +188,7 @@ def main() -> int:
 
     validate_required_files(failures)
     validate_workflow(failures)
+    validate_cargo(failures)
 
     if failures:
         print("Werkstatt repository validation failed:", file=sys.stderr)

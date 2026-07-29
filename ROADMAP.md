@@ -70,4 +70,4 @@ Every phase preserves:
 ## Program authority
 
 - [Program issue #1](https://github.com/dornglut/werkstatt/issues/1)
-- [Active W1 issue #6](https://github.com/dornglut/werkstatt/issues/6)
+- [W2 umbrella issue #8](https://github.com/dornglut/werkstatt/issues/8)

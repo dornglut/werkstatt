@@ -1,0 +1,27 @@
+[package]
+name = "werkstatt"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.93"
+resolver = "3"
+description = "Human-first engineering workbench foundation"
+license = "MIT"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "werkstatt"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.5.60", features = ["derive"] }
+rusqlite = { version = "0.38.0", features = ["bundled"] }
+thiserror = "2.0.18"
+uuid = { version = "1.21.0", features = ["v4"] }
+
+[dev-dependencies]
+tempfile = "3.27.0"
+
+[lints.rust]
+unsafe_code = "forbid"
