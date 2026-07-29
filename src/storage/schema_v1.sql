@@ -1,0 +1,15 @@
+CREATE TABLE schema_migrations (version INTEGER PRIMARY KEY CHECK (version > 0), checksum TEXT NOT NULL, application_version TEXT NOT NULL);
+CREATE TABLE application_metadata (id INTEGER PRIMARY KEY CHECK (id = 1), database_id TEXT NOT NULL UNIQUE, profile_name TEXT NOT NULL, clean_shutdown INTEGER NOT NULL CHECK (clean_shutdown IN (0, 1)), journal_mode TEXT NOT NULL);
+CREATE TABLE projects (id TEXT PRIMARY KEY CHECK (length(id) > 0), name TEXT NOT NULL CHECK (length(name) > 0), version INTEGER NOT NULL DEFAULT 0 CHECK (version >= 0));
+CREATE TABLE repository_bindings (id TEXT PRIMARY KEY, project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE RESTRICT, remote_identity TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0 CHECK (version >= 0));
+CREATE TABLE work_source_bindings (id TEXT PRIMARY KEY, project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE RESTRICT, source_identity TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0 CHECK (version >= 0));
+CREATE TABLE authority_observations (id TEXT PRIMARY KEY, project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE RESTRICT, revision TEXT NOT NULL, facts TEXT NOT NULL);
+CREATE TABLE work_items (id TEXT PRIMARY KEY, project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE RESTRICT, contract_revision TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0 CHECK (version >= 0));
+CREATE TABLE workspaces (id TEXT PRIMARY KEY, project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE RESTRICT, identity TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0 CHECK (version >= 0));
+CREATE TABLE executions (id TEXT PRIMARY KEY, work_item_id TEXT NOT NULL REFERENCES work_items(id) ON DELETE RESTRICT, state TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0 CHECK (version >= 0));
+CREATE TABLE activities (id INTEGER PRIMARY KEY, project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE RESTRICT, execution_id TEXT REFERENCES executions(id) ON DELETE RESTRICT, kind TEXT NOT NULL, message TEXT NOT NULL);
+CREATE TABLE artifacts (id TEXT PRIMARY KEY, relative_path TEXT NOT NULL, digest TEXT NOT NULL, size INTEGER NOT NULL CHECK (size >= 0));
+CREATE TABLE evidence (id TEXT PRIMARY KEY, work_item_id TEXT NOT NULL REFERENCES work_items(id) ON DELETE RESTRICT, result TEXT NOT NULL, subject_revision TEXT NOT NULL);
+CREATE TABLE findings (id TEXT PRIMARY KEY, work_item_id TEXT NOT NULL REFERENCES work_items(id) ON DELETE RESTRICT, severity TEXT NOT NULL, status TEXT NOT NULL);
+CREATE TABLE reconciliations (id TEXT PRIMARY KEY, work_item_id TEXT NOT NULL REFERENCES work_items(id) ON DELETE RESTRICT, state TEXT NOT NULL);
+CREATE TABLE local_preferences (key TEXT PRIMARY KEY, value TEXT NOT NULL);

@@ -2,9 +2,9 @@
 
 ## Current phase
 
-W1 is documentation and architecture only. No Rust package, CLI, database, actor runtime, or graphical application exists.
+W1 is accepted. W2A adds the package, domain, and local SQLite foundation only; actor runtime, Git/work-source adapters, ordinary workflow commands, and graphical application remain absent.
 
-Validation must prove documentation integrity, authority truth, scope, and implementation readiness without implying runtime behavior.
+Validation proves documentation integrity and, in W2A, locked formatting, tests, and strict Clippy for the bounded foundation. It does not imply later workflow, agent, security-enforcement, or UI behavior.
 
 ## Canonical command
 

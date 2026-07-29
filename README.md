@@ -14,19 +14,16 @@ All operating modes share one role-aware work model. Technical capability does n
 
 ## Current maturity
 
-W0 product architecture is accepted. The repository is in W1 work-domain and W2 contract design.
+W0 and W1 are accepted. W2 is active at its bounded W2A domain-and-storage foundation delivery.
 
 It does not yet provide:
 
-- a Rust package or stable public API;
-- a command-line application;
-- a database or migration;
 - a Codex or offline-agent adapter;
 - delegated or autonomous execution;
 - GitHub write integration;
 - a Runenwerk graphical frontend.
 
-W1 is documentation-only and defines the exact domain, state, policy, authority, workspace, evidence, adapter, storage, CLI, implementation, and test contracts required for W2.
+W2A provides only the Rust package baseline, domain foundation, and local SQLite storage. Later W2 deliveries remain blocked; no command workflow beyond foundational diagnostics is implemented.
 
 ## Start here
 
@@ -68,4 +65,4 @@ Werkstatt is licensed under the [MIT License](LICENSE).
 
 ## Development boundary
 
-Only documentation and issue work are authorized in W1. Rust implementation begins in W2 only after W1 is accepted through an exact-head validated pull request and a separate W2 issue authorizes implementation.
+W2 implementation began only after accepted-main validation for W1 commit `a87d8fbc5ac1e4e31d5a3f6b601237cf8e3b8cd9` succeeded. W2A does not add agent, GitHub-write, arbitrary-command, lease-enforcement, autonomous, or Runenwerk features.
