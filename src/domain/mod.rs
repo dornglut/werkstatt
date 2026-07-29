@@ -9,5 +9,5 @@ pub use ids::{
 pub use model::{
     AuthorityObservation, Evidence, EvidenceResult, EvidenceSubject, Execution, ExecutionState,
     Finding, FindingSeverity, LifecycleStage, Readiness, ReconciliationState, RevisionRef,
-    SynchronizationState, WorkContract, WorkState, readiness,
+    SynchronizationState, WorkContract, WorkItem, WorkState, readiness,
 };
