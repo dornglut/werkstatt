@@ -6,7 +6,7 @@
 2. Read [ARCHITECTURE.md](ARCHITECTURE.md).
 3. Read [ROADMAP.md](ROADMAP.md).
 4. Read [docs/w1-design.md](docs/w1-design.md).
-5. Open program issue #1 and active W1 issue #6.
+5. Open program issue #1, W2 umbrella #8, and the one active delivery issue.
 6. Verify accepted `main`, task branch, pull-request head, exact-head CI, and unresolved findings before editing.
 
 ## Authority
@@ -25,16 +25,24 @@ Correct the authority that owns a disputed fact before continuing dependent work
 
 ## Current phase
 
-W1 designs the work domain and the W2 human-first implementation contract.
+W0 and W1 are accepted. W2A is accepted at `bd4f12f770fa82d25657f41fd8cff5e3a299a8a1`. W2B issue #10 is the only active implementation delivery.
 
-W1 permits documentation, architecture, issue, and review work only. It does not authorize:
+W2B authorizes only:
 
-- Rust source or Cargo metadata;
-- SQLite migrations;
-- command execution;
+- strongly typed repository and work-source observation values;
+- narrow read ports owned by those observations;
+- fixed-argument, shell-free Git CLI inspection;
+- bounded repository-local Markdown and schema-version-1 JSON work-source parsing;
+- optional bounded read-only `gh issue view` observation;
+- focused tests and truthful documentation for that scope.
+
+W2B does not authorize:
+
+- source, Git, GitHub, issue, pull-request, or workflow mutation;
+- arbitrary command execution or validator execution;
+- guided `start`, `status`, `validate`, `review`, or `reconcile` workflows;
 - Codex, MCP, A2A, or offline-agent adapters;
-- GitHub write integration;
-- autonomous operations;
+- policy, approval, writer-lease, scheduler, or autonomous behavior;
 - Runenwerk frontend code.
 
 ## Work rules
@@ -48,32 +56,36 @@ W1 permits documentation, architecture, issue, and review work only. It does not
 - Do not create generated or operational artifacts as parallel issue, roadmap, architecture, validation, or acceptance authority.
 - Do not introduce source-writing validation workflows or direct protected-branch writes.
 - Keep each tracked file below 131,072 raw bytes unless accepted authority grants an exception and another execution path exists.
-- Preserve accepted W0 evidence through immutable Git history; do not create duplicate archive trees, and keep current canonical documents lifecycle-accurate.
+- Preserve accepted evidence through immutable Git history; do not create duplicate archive trees, and keep current canonical documents lifecycle-accurate.
+- Use fixed argument vectors and explicit working directories. Never invoke Git or `gh` through a shell.
+- Do not retain tokens, credential-bearing remotes, raw environments, private home paths, or unbounded provider output.
+- Do not use lossy path rendering for repository identity, equality, containment, or authority decisions.
 
-## W1 quality gates
+## W2B quality gates
 
 Review:
 
-- concept necessity and single ownership;
-- human/agent model unity without parallel entity families;
-- ordinary manual ergonomics;
-- exact transition and error behavior;
-- capability and policy independence from prompts;
-- stale authority and moved-head failure semantics;
-- workspace, lease, cancellation, and recovery clarity;
-- independent evidence/review/acceptance separation;
-- provider-neutral domain with concrete first adapters;
-- W2 implementation readiness without W3 scope leakage.
+- concept necessity, single ownership, and domain independence;
+- explicit heuristic repository fingerprint semantics and distinct common-directory/worktree identity;
+- branch, detached-head, remote, base/head, status, worktree, operation, and bounded staged/unstaged diff observations;
+- byte-safe path handling and credential-safe remote normalization;
+- bounded timeout and output behavior without pipe deadlock;
+- deterministic Markdown/JSON normalization without inferred decisions;
+- mutable GitHub issue observations never presented as immutable revisions;
+- actionable failures with safe context and no private-path leakage;
+- no SQLite redesign, W2C command workflow, or W3 scope leakage;
+- canonical and exact-head validation.
 
 ## Delivery
 
-A W1 delivery reports:
+A W2B delivery reports:
 
-- accepted base revision;
+- accepted W2A base revision and accepted-main validation;
 - exact reviewed feature head;
 - changed files and authority inspected;
-- requirement-to-document conformance;
-- validation performed and unavailable;
+- repository and work-source behavior implemented;
+- dependency decisions and explicit exclusions;
+- local and exact-head validation evidence;
 - unresolved findings;
 - explicit next authorized action.
 

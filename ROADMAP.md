@@ -23,7 +23,7 @@ W0 product investigation
 | Phase | Durable outcome | Depends on | Exit gate |
 |---|---|---|---|
 | W0 | Product boundary, retrospective, authority model, actor journeys, security baseline, alternatives, success criteria, and sequence | organization authorization | accepted at `5a8a6c080a7cab0894e78d2d4dd28ee135b0808f` |
-| W1 | Domain vocabulary, invariants, states, policy, authority sync, workspace/recovery, evidence/review, ports/storage, and W2 contract | W0 | competent actor can implement W2 without material invention |
+| W1 | Domain vocabulary, invariants, states, policy, authority sync, workspace/recovery, evidence/review, ports/storage, and W2 contract | W0 | accepted at `a87d8fbc5ac1e4e31d5a3f6b601237cf8e3b8cd9` |
 | W2 | Model-free CLI proof for a comparative real manual task | W1 | human workflow shows net value without duplicate authority |
 | W3 | Managed workspace, writer lease, command policy, approvals, persistence recovery, cancellation, and budgets | W2 | safe single-writer execution substrate passes fault/security proofs |
 | W4 | One delegated Codex actor completes bounded work to validated draft PR | W3 | issue, base, workspace, actor, branch, validation, receipt, and handoff proven |
@@ -33,6 +33,18 @@ W0 product investigation
 | W8 | Automated CI observation and review-correction loop | W5 and W7 | bounded correction, republishing, revalidation, and escalation reliable |
 | W9 | Policy-controlled end-to-end delivery for selected work classes | W8 and explicit policy | eligible work accepted without exceeding authority |
 | W10 | Multiple actors, remote execution, and interoperability | W9 reliability evidence | coordination preserves isolation, least privilege, reviewability, and recovery |
+
+## Current W2 delivery sequence
+
+| Delivery | State | Boundary | Next gate |
+|---|---|---|---|
+| W2A | Accepted | package, typed domain foundation, and SQLite schema/diagnostics | accepted-main validation proven by run `30441529835` |
+| W2B | Active | read-only Git, local Markdown/JSON, and optional read-only `gh` observations | independent review, merge, and accepted-main validation |
+| W2C | Blocked | guided start and status | W2B acceptance |
+| W2D | Blocked | validation, evidence, review, and reconciliation | W2C acceptance |
+| W2E | Blocked | fixture, counterbalanced pilot, and closeout | W2D acceptance |
+
+W2B does not implement the ordinary command path, run validators, edit source, mutate Git or GitHub, or introduce W3 enforcement.
 
 ## Global gates
 
@@ -51,7 +63,6 @@ Every phase preserves:
 
 ## Readiness rules
 
-- W1 contains no product implementation.
 - W2 proves manual usefulness before agent integration.
 - W3 proves execution safety before delegated code generation.
 - W4 stops at a reviewable draft PR.
@@ -59,15 +70,17 @@ Every phase preserves:
 - Automatic merge requires a separately accepted policy and reliability evidence.
 - Multi-agent operation follows dependable single-agent execution.
 - Runenwerk consumes the headless core; it does not own the domain.
-- Each phase gets one owning issue only after its predecessor is accepted.
+- Each delivery becomes active only after its predecessor is accepted and accepted-main validation is proven.
 
 ## Accepted foundation
 
 - [ADR 0005](https://github.com/dornglut/engineering/blob/main/adrs/0005-authorize-werkstatt-pilot.md)
 - [W0 accepted architecture](docs/w0-investigation.md)
 - [W1 design](docs/w1-design.md)
+- W2A accepted at `bd4f12f770fa82d25657f41fd8cff5e3a299a8a1`
 
 ## Program authority
 
 - [Program issue #1](https://github.com/dornglut/werkstatt/issues/1)
 - [W2 umbrella issue #8](https://github.com/dornglut/werkstatt/issues/8)
+- [Active W2B issue #10](https://github.com/dornglut/werkstatt/issues/10)
