@@ -73,7 +73,7 @@ Git, repository source, accepted architecture, issues, pull requests, validation
 
 ## License
 
-Werkstatt is licensed under the [MIT License](LICENSE).
+The current Werkstatt source is available under the [GNU Affero General Public License version 3 only](LICENSE) (`AGPL-3.0-only`). A separate commercial license may be available from copyright holder(s) with sufficient rights to grant it; see [LICENSING.md](LICENSING.md) for the licensing policy and earlier-revision terms.
 
 ## Development boundary
 

@@ -5,7 +5,7 @@ edition = "2024"
 rust-version = "1.93"
 resolver = "3"
 description = "Human-first engineering workbench foundation"
-license = "MIT"
+license = "AGPL-3.0-only"
 
 [lib]
 path = "src/lib.rs"
